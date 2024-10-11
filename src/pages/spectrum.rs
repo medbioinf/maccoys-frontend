@@ -1,5 +1,8 @@
 // 3rd party imports
 use dioxus::prelude::*;
+use dioxus_free_icons::icons::fa_regular_icons::FaCircleCheck;
+use dioxus_free_icons::icons::fa_solid_icons::{FaCircleInfo, FaCircleXmark};
+use dioxus_free_icons::Icon;
 use maccoys_exchange_entities::results_api::Spectrum;
 use serde_json::json;
 
@@ -182,7 +185,7 @@ pub fn Spectrum(search_uuid: String, ms_run_name: String, spectrum_id: String) -
                                             }
                                         }
                                         for (row_idx, row) in identification.iter_goodness_rows().unwrap().enumerate() {
-                                            for (col_idx, col) in row.into_iter().enumerate() {
+                                            for (col_idx, col) in row.iter().enumerate() {
                                                 div {
                                                     class: "dataframe-cell",
                                                     style: "grid-column: {col_idx + 1} / span 1; grid-row: {row_idx + 2} / span 1",
@@ -205,7 +208,7 @@ pub fn Spectrum(search_uuid: String, ms_run_name: String, spectrum_id: String) -
                                             }
                                         }
                                         for (row_idx, row) in identification.iter_psm_rows().unwrap().enumerate() {
-                                            for (col_idx, col) in row.into_iter().enumerate() {
+                                            for (col_idx, col) in row.iter().enumerate() {
                                                 div {
                                                     class: "dataframe-cell",
                                                     style: "grid-column: {col_idx + 1} / span 1; grid-row: {row_idx + 2} / span 1",
