@@ -184,6 +184,11 @@ pub fn Spectrum(search_uuid: String, ms_run_name: String, spectrum_id: String) -
                                                 "{col.name()}"
                                             }
                                         }
+                                        div {
+                                            class: "dataframe-cell dataframe-head",
+                                            style: "grid-column: {goodness.shape().1 + 1} / span 1; grid-row: 1 / span 1",
+                                            ""
+                                        }
                                         for (row_idx, row) in identification.iter_goodness_rows().unwrap().enumerate() {
                                             for (col_idx, col) in row.iter().enumerate() {
                                                 div {
@@ -192,6 +197,52 @@ pub fn Spectrum(search_uuid: String, ms_run_name: String, spectrum_id: String) -
                                                     "{col}"
                                                 }
                                             }
+                                            div {
+                                                class: "dataframe-cell",
+                                                style: "grid-column: {row.len() + 1} / span 1; grid-row: {row_idx + 2} / span 1",
+                                                if row["distribution"].to_string().starts_with("exp") && row["p_value"].try_extract::<f64>().unwrap() > 0.05 {
+                                                    span {
+                                                        Icon {
+                                                            icon: FaCircleCheck
+                                                        }
+                                                    }
+
+                                                } else if row["p_value"].try_extract::<f64>().unwrap() > 0.05 {
+                                                    span {
+                                                        Icon {
+                                                            icon: FaCircleInfo
+                                                        }
+                                                    }
+
+                                                } else {
+                                                    span {
+                                                        Icon {
+                                                            icon: FaCircleXmark
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    div {
+                                        class: "row",
+                                        span {
+                                            Icon {
+                                                icon: FaCircleXmark
+                                            }
+                                            " - Does not fit the distribution"
+                                        }
+                                        span {
+                                            Icon {
+                                                icon: FaCircleInfo
+                                            }
+                                            " - Fits the distribution but is not exponential"
+                                        }
+                                        span {
+                                            Icon {
+                                                icon: FaCircleCheck
+                                            }
+                                            " - Fits the distribution"
                                         }
                                     }
                                 } else {
