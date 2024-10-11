@@ -8,6 +8,8 @@ use crate::{configuration::Configuration, routes::Routes};
 
 #[component]
 pub fn Spectrum(search_uuid: String, ms_run_name: String, spectrum_id: String) -> Element {
+    let spectrum_id = urlencoding::decode(&spectrum_id).unwrap().to_string();
+
     let maccoys_base_url = use_context::<Configuration>()
         .get_maccoys_base_url()
         .to_string();
