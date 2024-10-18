@@ -174,6 +174,7 @@ pub fn Spectrum(search_uuid: String, ms_run_name: String, spectrum_id: String) -
                                 div {
                                     id: "score-plot-{idx}",
                                 }
+                                h3 { "Distribution fit" }
                                 if let Some(goodness) = identification.get_goodnesses() {
                                     div {
                                         class: "dataframe mb-3",
@@ -247,6 +248,11 @@ pub fn Spectrum(search_uuid: String, ms_run_name: String, spectrum_id: String) -
                                     }
                                 } else {
                                     p { "No goodness values" }
+                                }
+
+                                h3 {
+                                    class: "mt-3",
+                                    "Peptide spectrum matches"
                                 }
                                 if let Some(psms) = identification.get_psms() {
                                     div {
