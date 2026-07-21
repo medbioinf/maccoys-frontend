@@ -4,10 +4,11 @@ use dioxus_free_icons::icons::fa_regular_icons::FaCircleCheck;
 use dioxus_free_icons::icons::fa_solid_icons::{FaCircleInfo, FaCircleXmark};
 use dioxus_free_icons::Icon;
 use maccoys_exchange_entities::results_api::Spectrum;
+use maccoys_exchange_entities::tools::polars::RowIter;
 use serde_json::json;
 
 // internal imports
-use crate::{configuration::Configuration, routes::Routes};
+use crate::{components::dataframe::DataFrame, configuration::Configuration, routes::Routes};
 
 #[component]
 pub fn Spectrum(search_uuid: String, ms_run_name: String, spectrum_id: String) -> Element {
@@ -117,7 +118,7 @@ pub fn Spectrum(search_uuid: String, ms_run_name: String, spectrum_id: String) -
             }
         }
 
-        h2 { "Spectrum {spectrum_id}" }
+        h2 { "Spectrum: {spectrum_id}" }
         match &*spectrum_feature.read_unchecked() {
             Some(Ok(spectrum)) => {
 
@@ -190,7 +191,7 @@ pub fn Spectrum(search_uuid: String, ms_run_name: String, spectrum_id: String) -
                                             style: "grid-column: {goodness.shape().1 + 1} / span 1; grid-row: 1 / span 1",
                                             ""
                                         }
-                                        for (row_idx, row) in identification.iter_goodness_rows().unwrap().enumerate() {
+                                        for (row_idx, row) in RowIter::new(&goodness).enumerate() {
                                             for (col_idx, col) in row.iter().enumerate() {
                                                 div {
                                                     class: "dataframe-cell",
@@ -201,7 +202,7 @@ pub fn Spectrum(search_uuid: String, ms_run_name: String, spectrum_id: String) -
                                             div {
                                                 class: "dataframe-cell",
                                                 style: "grid-column: {row.len() + 1} / span 1; grid-row: {row_idx + 2} / span 1",
-                                                if row["distribution"].to_string().starts_with("exp") && row["p_value"].try_extract::<f64>().unwrap() > 0.05 {
+                                                if row["distribution"].to_string().starts_with("\"exp") && row["p_value"].try_extract::<f64>().unwrap() > 0.05 {
                                                     span {
                                                         Icon {
                                                             icon: FaCircleCheck
@@ -255,25 +256,7 @@ pub fn Spectrum(search_uuid: String, ms_run_name: String, spectrum_id: String) -
                                     "Peptide spectrum matches"
                                 }
                                 if let Some(psms) = identification.get_psms() {
-                                    div {
-                                        class: "dataframe",
-                                        for (col_idx, col) in psms.get_columns().iter().enumerate() {
-                                            div {
-                                                class: "dataframe-cell dataframe-head",
-                                                style: "grid-column: {col_idx + 1} / span 1; grid-row: 1 / span 1",
-                                                "{col.name()}"
-                                            }
-                                        }
-                                        for (row_idx, row) in identification.iter_psm_rows().unwrap().enumerate() {
-                                            for (col_idx, col) in row.iter().enumerate() {
-                                                div {
-                                                    class: "dataframe-cell",
-                                                    style: "grid-column: {col_idx + 1} / span 1; grid-row: {row_idx + 2} / span 1",
-                                                    "{col}"
-                                                }
-                                            }
-                                        }
-                                    }
+                                    DataFrame { dataframe: psms.clone() }
                                 } else {
                                     p { "No PSMs" }
                                 }
